@@ -14,6 +14,13 @@ class Status extends Model
      */
     protected $fillable = ['user_id', 'post_id', 'title', 'desc'];
 
+    /**
+     * Get warning for selected post.
+     *
+     * @param int $id
+     * 
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function getWarn($id){
         return DB::table('statuses')
             ->select('statuses.id', 'title', 'desc', 'user_id', 'name')

@@ -78,6 +78,7 @@ class Reply extends Model
             ->where('id', $id)
             ->update(['votes' => $count]);
     }
+
     /**
      * Set best answer.
      *
@@ -89,6 +90,16 @@ class Reply extends Model
             ->where('id', $id)
             ->update(['is_best' => $val]);
     }
+    
+    /**
+     * Show user who reply the post
+     * for report user.
+     *
+     * @param int $id
+     * @param int $user
+     * 
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function detailChild($id, $user){
         return DB::table('replies')
             ->select('users.id', 'name')

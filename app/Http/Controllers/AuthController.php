@@ -206,6 +206,15 @@ class AuthController extends Controller
 			return response()->json(['msg' => true]);
 		}
 	}
+
+	/**
+	 * Update profile user.
+	 *
+	 * @param int $id
+	 * @param Request $req
+	 * 
+	 * @return \Illuminate\Http\Response
+	 */
 	public function update($id, Request $req){
 		$user = User::find($id);
 		$data['name'] = $req->name;

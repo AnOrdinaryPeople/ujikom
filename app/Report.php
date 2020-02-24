@@ -14,6 +14,11 @@ class Report extends Model
      */
     protected $fillable = ['type', 'suspect_id', 'desc', 'user_id', 'read'];
 
+    /**
+     * Showing table reports.
+     *
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function adminReport(){
         return DB::table('reports')
             ->select('reports.id', 'name', 'type', 'reports.desc', 'reports.read', 'reports.user_id', 'notifications.id as notif_id')

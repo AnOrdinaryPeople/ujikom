@@ -28,6 +28,15 @@ class UserController extends Controller
             'voted' => Vote::findVoted($user)
         ]);
     }
+
+    /**
+     * Get user post.
+     *
+     * @param int $user
+     * @param int $skip
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function mine($user, $skip){
         return response()->json(Post::getMine($user, $skip));
     }
@@ -170,9 +179,28 @@ class UserController extends Controller
             'child_vote' => Vote::votedDetail($user, 4, 0, $id)
         ]);
     }
+
+    /**
+     * Load more child reply.
+     *
+     * @param int $id
+     * @param int $skip
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function moreChild($id, $skip){
         return response()->json(Reply::getChildReply($id, $skip));
     }
+
+    /**
+     * Set reply to best answer.
+     *
+     * @param int $id
+     * @param int $post
+     * @param int $user
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function best($id, $post, $user){
         if($hasBest = Reply::best($post))
             Reply::setBest($hasBest->id, 0);
@@ -192,6 +220,16 @@ class UserController extends Controller
             'child_best' => $b ? Reply::getChildReply($b->id) : []
         ]);
     }
+
+    /**
+     * Set warning to selected post.
+     *
+     * @param int $post
+     * @param int $user
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function warn($post, $user, Request $req){
         $w = Warn::create([
             'user_id' => $user,
@@ -210,6 +248,16 @@ class UserController extends Controller
 
         return response()->json(['u' => $u, 'p' => $w]);
     }
+
+    /**
+     * Update warning.
+     *
+     * @param int $warn
+     * @param int $post
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function warnUpdate($warn, $post, Request $req){
         Warn::find($warn)->update([
             'title' => $req->title,
@@ -226,6 +274,16 @@ class UserController extends Controller
 
         return response()->json(['u' => $u, 'p' => Warn::find($warn)]);
     }
+
+    /**
+     * Delete warning.
+     *
+     * @param int $warn
+     * @param int $post
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function warnDel($warn, $post, Request $req){
         $p = Post::find($post);
 
@@ -238,6 +296,16 @@ class UserController extends Controller
 
         return response()->json(['msg' => 'done']);
     }
+
+    /**
+     * Show user who reply the post
+     * for report user.
+     *
+     * @param int $id
+     * @param int $user
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function detailChild($id, $user){
         return response()->json(Reply::detailChild($id, $user));
     }
@@ -251,6 +319,14 @@ class UserController extends Controller
 
         return response()->json(['msg' => 'done']);
     }
+
+    /**
+     * Search post.
+     *
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function search(Request $req){
         return response()->json([
             0 => Post::search(1, $req->q),
@@ -315,7 +391,7 @@ class UserController extends Controller
     }
 
     /**
-     * Update komentar.
+     * Update reply.
      *
      * @param int $id
      * @param \Illuminate\Http\Request $req
@@ -422,7 +498,7 @@ class UserController extends Controller
     /**
      * Count notification for authenticated user.
      *
-     * @param  int $user
+     * @param int $user
      *
      * @return \Illuminate\Http\Response
      */
@@ -433,7 +509,7 @@ class UserController extends Controller
     /**
      * Get notification for authenticated user.
      *
-     * @param  int $user
+     * @param int $user
      *
      * @return \Illuminate\Http\Response
      */
@@ -444,26 +520,58 @@ class UserController extends Controller
             ->get()
         );
     }
+
+    /**
+     * Set readed to selected notification.
+     *
+     * @param int $id
+     */
     public function notifRead($id){
         Notif::find($id)->update(['read' => 1]);
-
-        return response()->json(['msg' => 'done']);
     }
+
+    /**
+     * Delete selected notification.
+     *
+     * @param int $id
+     * @param int $user
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function notifDel($id, $user){
         Notif::destroy($id);
 
         return response()->json(Notif::where('user_id', $user)->count());
     }
+
+    /**
+     * Set readed to all notification.
+     *
+     * @param int $user
+     */
     public function notifAll($user){
         Notif::where('user_id', $user)->update(['read' => 1]);
-
-        return response()->json(['msg' => 'done']);
     }
+
+    /**
+     * Delete all notification.
+     *
+     * @param int $user
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function notifAllDel($user){
         Notif::where('user_id', $user)->delete();
-
-        return response()->json(['msg' => 'done']);
     }
+
+    /**
+     * Detail message from admin.
+     *
+     * @param int $id
+     * @param int $user
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function notifDetail($id, $user){
         return response()->json(Notif::where('id', $id)
             ->where('user_id', $user)

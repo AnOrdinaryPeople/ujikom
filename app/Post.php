@@ -33,6 +33,15 @@ class Post extends Model
             ->offset($skip)
             ->get();
     }
+
+    /**
+     * Get user post.
+     *
+     * @param int $user
+     * @param int $skip
+     * 
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function getMine($user, $skip){
         return DB::table('posts')
             ->select('posts.id', 'title', 'posts.desc', 'posts.votes', 'type', 'location', 'posts.created_at', 'name', DB::raw('count(replies.desc) as total'), 'posts.user_id')
@@ -89,6 +98,15 @@ class Post extends Model
             ->where('id', $id)
             ->update(['votes' => $count]);
     }
+
+    /**
+     * Search post.
+     *
+     * @param int $type
+     * @param string $q
+     * 
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function search($type, $q){
         return DB::table('posts')
             ->select('posts.id', 'title', 'posts.created_at', 'name', 'posts.votes', DB::raw('count(replies.desc) as total'))
@@ -99,6 +117,14 @@ class Post extends Model
             ->groupBy('posts.id')
             ->get();
     }
+
+    /**
+     * Show tables for dashboard.
+     *
+     * @param string $table
+     * 
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function adminHome($table = 'posts'){
         return DB::table($table)
             ->select(DB::raw('DATE(created_at) as label'), DB::raw('count(id) as value'))
@@ -106,12 +132,26 @@ class Post extends Model
             ->groupBy('label')
             ->get();
     }
+
+    /**
+     * Comparing type post for pie chart.
+     *
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function adminType(){
         return DB::table('posts')
             ->select('type as label', DB::raw('count(title) as value'))
             ->groupBy('type')
             ->get();
     }
+
+    /**
+     * Comparing type post for line chart.
+     *
+     * @param int $type
+     * 
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function adminTypee($type){
         return DB::table('posts')
             ->select(DB::raw('DATE(created_at) as label'), DB::raw('count(title) as value'))
@@ -120,6 +160,12 @@ class Post extends Model
             ->groupBy('label')
             ->get();
     }
+
+    /**
+     * Showing table posts.
+     *
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function adminPost(){
         return DB::table('posts')
             ->select('posts.id', 'name', 'type', 'title', 'votes', 'user_id')

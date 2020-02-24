@@ -106,6 +106,12 @@ class User extends Authenticatable implements JWTSubject
             ->where('token', $token)
             ->delete();
     }
+    
+    /**
+     * Showing table users.
+     *
+     * @return void
+     */
     public static function adminUser(){
         return DB::table('users')
             ->select('users.id', 'name', 'email', 'avatar', 'email_verified_at', DB::raw('count(posts.id) as post'), 'users.created_at')

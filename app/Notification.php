@@ -14,6 +14,11 @@ class Notification extends Model
      */
     protected $fillable = ['user_id', 'desc', 'read', 'sauce', 'report_id'];
 
+    /**
+     * Showing messages.
+     *
+     * @return \Illuminate\Support\Facades\DB
+     */
     public static function adminNotif(){
         return DB::table('notifications')
             ->select('notifications.id', 'name', 'desc', 'user_id')
