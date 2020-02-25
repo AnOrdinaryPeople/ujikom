@@ -28,7 +28,7 @@ export default {
                     this.$auth.user().id
                 }`
             )
-            .then(resp => (this.data = resp.data.desc));
+            .then(resp => (this.desc = resp.data.desc));
     }
 };
 </script>
