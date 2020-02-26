@@ -281,8 +281,6 @@ class UserController extends Controller
      * @param int $warn
      * @param int $post
      * @param Request $req
-     * 
-     * @return \Illuminate\Http\Response
      */
     public function warnDel($warn, $post, Request $req){
         $p = Post::find($post);
@@ -293,8 +291,6 @@ class UserController extends Controller
             'sauce' => url('home/detail/'.$post)
         ]);
         Warn::destroy($warn);
-
-        return response()->json(['msg' => 'done']);
     }
 
     /**
@@ -309,6 +305,14 @@ class UserController extends Controller
     public function detailChild($id, $user){
         return response()->json(Reply::detailChild($id, $user));
     }
+    
+    /**
+     * Send report to admin.
+     *
+     * @param int $post
+     * @param int $user
+     * @param Request $req
+     */
     public function reportSend($post, $user, Request $req){
         Report::create([
             'type' => $req->type,
@@ -316,8 +320,6 @@ class UserController extends Controller
             'desc' => $req->desc,
             'user_id' => $user
         ]);
-
-        return response()->json(['msg' => 'done']);
     }
 
     /**
@@ -342,8 +344,6 @@ class UserController extends Controller
      * @param int $user
      * @param int $owner
      * @param \Illuminate\Http\Request $req
-     * 
-     * @return object
      */
     public function sendReply($id, $user, $owner, Request $req){
         Reply::create([
@@ -357,8 +357,6 @@ class UserController extends Controller
             'desc' => User::find($user)->name.' menjawab postinganmu '.Post::find($id)->title,
             'sauce' => url('home/detail/'.$id)
         ]);
-
-        return response()->json(['msg' => 'done']);
     }
 
     /**
@@ -369,8 +367,6 @@ class UserController extends Controller
      * @param int $owner
      * @param int $reply
      * @param \Illuminate\Http\Request $req
-     * 
-     * @return void
      */
     public function sendChild($id, $user, $owner, $reply, Request $req){
         Reply::create([
@@ -386,8 +382,6 @@ class UserController extends Controller
             'desc' => User::find($user)->name.' menjawab komentarmu di postingan '.$p->title,
             'sauce' => url('home/detail/'.$p->id)
         ]);
-
-        return response()->json(['msg' => 'done']);
     }
 
     /**
@@ -395,19 +389,30 @@ class UserController extends Controller
      *
      * @param int $id
      * @param \Illuminate\Http\Request $req
-     * 
-     * @return \Illuminate\Http\Response
      */
     public function updateRep($id, Request $req){
         Reply::find($id)->update($req->all());
-
-        return response()->json(['msg' => 'done']);
     }
-    public function destroyRep($id){
-        Reply::where('has_child_id', $id)->delete();
-        Reply::destroy($id);
 
-        return response()->json(['msg' => 'done']);
+
+    /**
+     * Delete Reply with the child.
+     *
+     * @param int $id
+     */
+    public function destroyRep($id){
+        $r = Reply::where('has_child_id', $id);
+
+        foreach ($r->get() as $key) Vote::where('type', 4)
+            ->where('type_id', $key->id)
+            ->delete();
+        
+        Vote::where('type', 4)
+            ->where('type_id', $id)
+            ->delete();
+
+        $r->delete();
+        Reply::destroy($id);
     }
 
     /**
@@ -485,14 +490,11 @@ class UserController extends Controller
      * Destroy post with replies.
      *
      * @param int $id
-     * 
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id){
+        Vote::where('parent_id', $id)->delete();
         Reply::where('post_id', $id)->delete();
         Post::destroy($id);
-
-        return response()->json(['msg' => 'done']);
     }
 
     /**
@@ -503,7 +505,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function notifCount($user){
-        return response()->json(Notif::where('user_id', $user)->count());
+        return response()->json(Notif::where('user_id', $user)->where('read', 0)->count());
     }
 
     /**
