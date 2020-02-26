@@ -397,7 +397,7 @@
                                     </div>
                                     <div class="col-1">
                                         <div
-                                            v-if="$auth.check() && i.user_id === $auth.user().id || $auth.check() && p.user_id === $auth.user().id"
+                                            v-if="$auth.check() && i.user_id === $auth.user().id || $auth.check() && p.user_id === $auth.user().id && p.type == 1"
                                             class="dropdown float-right"
                                         >
                                             <button class="btn" data-toggle="dropdown">
