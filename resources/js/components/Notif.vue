@@ -99,9 +99,10 @@ export default {
                 });
         },
         read(id, key) {
-            axios
-                .post(`user/not/read/${id}`)
-                .then(() => (this.n[key].read = 1));
+            axios.post(`user/not/read/${id}`).then(() => {
+                this.$emit("appNotCount");
+                this.n[key].read = 1;
+            });
         },
         del(id, key) {
             axios
@@ -112,14 +113,15 @@ export default {
                 });
         },
         allRead() {
-            axios
-                .post(`user/not/all/${this.$auth.user().id}`)
-                .then(() => this.n.map(x => (x.read = 1)));
+            axios.post(`user/not/all/${this.$auth.user().id}`).then(() => {
+                this.$emit("appNotCount");
+                this.n.map(x => (x.read = 1));
+            });
         },
         allDel() {
             axios.post(`user/not/alll/${this.$auth.user().id}`).then(() => {
+                this.$emit("appNotCount");
                 this.n = [];
-                this.$parent.appNotifCounter = 0;
             });
         },
         removeURL(str) {

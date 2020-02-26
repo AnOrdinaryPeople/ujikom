@@ -146,7 +146,7 @@
                 @enter="enter"
                 @afterEnter="after"
             >
-                <router-view></router-view>
+                <router-view @appNotCount="appNotip"></router-view>
             </transition>
         </div>
         <footer class="container-fluid text-dark px-0 mx-0">
