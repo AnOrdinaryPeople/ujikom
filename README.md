@@ -9,7 +9,7 @@
 	- [JWT Auth](https://github.com/tymondesigns/jwt-auth)
 - Front-end
 	- [Font Awesome](https://www.npmjs.com/package/font-awesome)
-	- [Apex Charts](https://apexcharts.com/docs/vue-charts/)
+	- [Apex Charts](https://apexcharts.com/docs/vue-charts)
 	- [ES6 Promise](https://www.npmjs.com/package/es6-promise)
 	- [Laravel Vue Pagination](https://www.npmjs.com/package/laravel-vue-pagination)
 	- [Markdown It Vue](https://www.npmjs.com/package/markdown-it-vue)
@@ -41,7 +41,7 @@
 	1. Recaptcha
 	1. Google and Facebook API
 1. Install composer `composer i`
-1. Install Node.js `npm i`
+1. ~~Install Node.js `npm i`~~
 1. Create JWT Secret `php artisan jwt:secret`
 1. Migrate table and make seeder `php artisan migrate --seed`
 1. Generate the key `php artisan key:generate`
