@@ -28,7 +28,7 @@
 ### Requirements
 - [Composer](https://getcomposer.org/download) >= 1.7.2
 - [Git](https://git-scm.com/downloads)
-- [Node.js](https://nodejs.org/en/download/current) >= 12.4.0
+- ~~[Node.js](https://nodejs.org/en/download/current) >= 12.4.0~~
 - [Visual Code](https://code.visualstudio.com/download) *optional*
 - [XAMPP](https://www.apachefriends.org/download.html) >= 3.2.2
 
