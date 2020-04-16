@@ -34,6 +34,7 @@
 
 ### Install
 1. Clone this project `git clone https://github.com/AnOrdinaryPeople/ujikom.git`
+1. Pull `dev` branch `git pull origin dev`
 1. Duplicate **.env.example** `cp .env.example .env`
 1. Set up the **.env**
 	1. Database
@@ -41,7 +42,7 @@
 	1. Recaptcha
 	1. Google and Facebook API
 1. Install composer `composer i`
-1. ~~Install Node.js `npm i`~~
+1. Install Node.js `npm i` *optional*
 1. Create JWT Secret `php artisan jwt:secret`
 1. Migrate table and make seeder `php artisan migrate --seed`
 1. Generate the key `php artisan key:generate`
