@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import { Welcome, Home, Detail, Edit, Search, Notif, MyPost, NotFound, NotifDetail } from './components'
 import { Login, Register, Profile, Verified, Forgot, Reset } from './components/auth'
 import { AHome, AUsers, APost, APostDetail, AReport, AMsg, ADel } from './components/admin'
+import { DevHome, DevStarter, DevApp, DevDash, DevAppDocs, DevUser, DevPost, DevRep, DevAppTut, DevPhp, DevJquery, DevNode } from './components/dev'
 
 export default new VueRouter({
     history: true,
@@ -176,6 +177,36 @@ export default new VueRouter({
         }, {
             path: '*',
             redirect: { name: 'not-found' }
+        }, {
+            path: '/developer',
+            name: 'developer',
+            component: DevApp,
+            redirect: '/developer/home',
+            children: [
+                { path: 'home', component: DevHome },
+                { path: 'starter', component: DevStarter },
+                {
+                    path: 'dashboard', component: DevDash, meta: {
+                        auth: {
+                            roles: 0,
+                            redirect: '/developer/home'
+                        }
+                    }
+                },
+                {
+                    path: 'docs', component: DevAppDocs, redirect: '/developer/docs/user', children: [
+                        { path: 'user', component: DevUser },
+                        { path: 'post', component: DevPost },
+                        { path: 'comment', component: DevRep }
+                    ]
+                }, {
+                    path: 'tutorial', component: DevAppTut, redirect: '/developer/tutorial/php', children: [
+                        { path: 'php', component: DevPhp },
+                        { path: 'jquery', component: DevJquery },
+                        { path: 'nodejs', component: DevNode }
+                    ]
+                }
+            ]
         }
     ],
 })

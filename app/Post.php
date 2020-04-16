@@ -128,7 +128,7 @@ class Post extends Model
     public static function adminHome($table = 'posts'){
         return DB::table($table)
             ->select(DB::raw('DATE(created_at) as label'), DB::raw('count(id) as value'))
-            ->whereBetween('created_at', [Carbon::parse('-30 days')->format('Y-m-d'), now()->format('Y-m-d')])
+            ->whereBetween('created_at', [Carbon::parse('-30 days')->format('Y-m-d'), Carbon::parse('+1 days')->format('Y-m-d')])
             ->groupBy('label')
             ->get();
     }
@@ -155,7 +155,7 @@ class Post extends Model
     public static function adminTypee($type){
         return DB::table('posts')
             ->select(DB::raw('DATE(created_at) as label'), DB::raw('count(title) as value'))
-            ->whereBetween('created_at', [Carbon::parse('-30 days')->format('Y-m-d'), now()->format('Y-m-d')])
+            ->whereBetween('created_at', [Carbon::parse('-30 days')->format('Y-m-d'), Carbon::parse('+1 days')->format('Y-m-d')])
             ->where('type', $type)
             ->groupBy('label')
             ->get();
@@ -172,5 +172,36 @@ class Post extends Model
             ->join('users', 'users.id', '=', 'user_id')
             ->orderBy('posts.id', 'desc')
             ->paginate(10);
+    }
+    public static function apiGet($limit, $skip, $sort, $sort_by, $user_id = null){
+        $db = DB::table('posts')
+            ->select('posts.id', 'posts.user_id', 'title', 'posts.desc', 'posts.votes', DB::raw('count(replies.desc) as total_comment'), 'posts.created_at')
+            ->join('replies', 'posts.id', '=', 'post_id')
+            ->limit($limit)
+            ->offset($skip)
+            ->groupBy('posts.id')
+            ->orderBy($sort_by, $sort);
+        
+        if($user_id) return $db->where('posts.user_id', $user_id)->get();
+
+        return $db->get();
+    }
+    public static function apiGetRand($limit, $skip){
+        return DB::table('posts')
+            ->select('posts.id', 'posts.user_id', 'title', 'posts.desc', 'posts.votes', DB::raw('count(replies.desc) as total_comment'), 'posts.created_at')
+            ->join('replies', 'posts.id', '=', 'post_id')
+            ->limit($limit)
+            ->offset($skip)
+            ->groupBy('posts.id')
+            ->inRandomOrder()
+            ->get();
+    }
+    public static function apiGetPag($count = 10, $sort = 'desc', $sort_by = 'id'){
+        return DB::table('posts')
+            ->select('posts.id', 'posts.user_id', 'title', 'posts.desc', 'posts.votes', DB::raw('count(replies.desc) as total_comment'), 'posts.created_at')
+            ->join('replies', 'posts.id', '=', 'post_id')
+            ->groupBy('posts.id')
+            ->orderBy($sort_by, $sort)
+            ->paginate($count);
     }
 }

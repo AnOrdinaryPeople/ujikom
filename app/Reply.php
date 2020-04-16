@@ -108,4 +108,32 @@ class Reply extends Model
             ->where('user_id', '!=', $user)
             ->get();
     }
+    public static function apiGet($id, $limit, $skip, $sort, $sort_by, $user_id = null){
+        $db = DB::table('replies')
+            ->select('id', 'user_id', 'desc', 'votes', 'created_at')
+            ->where('post_id', $id)
+            ->limit($limit)
+            ->offset($skip)
+            ->orderBy($sort_by, $sort);
+        
+        if($user_id) return $db->where('user_id', $user_id)->get();
+
+        return $db->get();
+    }
+    public static function apiGetRand($id, $limit, $skip){
+        return DB::table('replies')
+            ->select('id', 'user_id', 'desc', 'votes', 'created_at')
+            ->where('post_id', $id)
+            ->limit($limit)
+            ->offset($skip)
+            ->inRandomOrder()
+            ->get();
+    }
+    public static function apiGetPag($count = 10, $id, $sort = 'desc', $sort_by = 'id'){
+        return DB::table('replies')
+            ->select('id', 'user_id', 'desc', 'votes', 'created_at')
+            ->where('post_id', $id)
+            ->orderBy($sort_by, $sort)
+            ->paginate($count);
+    }
 }

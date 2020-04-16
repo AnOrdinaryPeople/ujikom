@@ -71,3 +71,23 @@ Route::group(['prefix' => 'admin'], function(){
 	Route::post('msg/destroy/{id}/{user}', 'AdminController@msgDel');
 	Route::post('history', 'AdminController@history');
 });
+
+Route::post('token/{user}', 'ApiController@index');
+Route::post('token/{user}/get', 'ApiController@generate');
+
+Route::get('user', 'ApiController@user');
+Route::get('user/rand', 'ApiController@userRand');
+Route::get('user/paginate', 'ApiController@userPag');
+Route::get('user/paginate/{count}', 'ApiController@userPag');
+Route::get('post', 'ApiController@post');
+Route::get('post/rand', 'ApiController@postRand');
+Route::get('post/paginate', 'ApiController@postPag');
+Route::get('post/paginate/{count}', 'ApiController@postPag');
+Route::get('comment/{id}', 'ApiController@comment');
+Route::get('comment/{id}/rand', 'ApiController@commentRand');
+Route::get('comment/{id}/paginate', 'ApiController@commentPag');
+Route::get('comment/{id}/paginate/{count}', 'ApiController@commentPag');
+
+Route::get('/{any}', function () {
+    return response()->json(['status' => 'Not found.'], 404);
+})->where('any','.*');

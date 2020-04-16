@@ -29,6 +29,12 @@
                     <li v-if="$auth.check()" class="nav-item">
                         <router-link class="nav-link" to="/home/post">Postinganku</router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link
+                            class="nav-link"
+                            :to="$auth.check() ? '/developer/dashboard' : '/developer'"
+                        >Developer</router-link>
+                    </li>
                 </ul>
                 <form autocomplete="off" class="d-inline w-50" @submit.prevent="appSearch">
                     <div class="input-group">
@@ -137,7 +143,7 @@
         </nav>
         <div
             class="container-fluid"
-            :class="$router.currentRoute.name === 'welcome' || $router.currentRoute.name === 'not-found' ? 'px-0' : 'my-4'"
+            :class="$router.currentRoute.name === 'welcome' || $router.currentRoute.name === 'not-found' ? 'px-0' : $router.currentRoute.matched.length && $router.currentRoute.matched[0].name === 'developer' ? '' : 'my-4'"
         >
             <transition
                 name="fade"
@@ -155,7 +161,7 @@
                     &copy; {{ new Date().getFullYear() }}
                     <strong>
                         <router-link class="text-dark text-decoration-none" to="/">Forum RPL</router-link>
-                    </strong>. All Right Reserved
+                    </strong>. All Rights Reserved
                 </p>
             </div>
         </footer>

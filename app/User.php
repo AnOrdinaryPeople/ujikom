@@ -121,4 +121,29 @@ class User extends Authenticatable implements JWTSubject
             ->orderBy('users.id', 'desc')
             ->paginate(9);
     }
+    public static function apiGet($limit = 10, $skip = 0, $sort = 'desc', $sort_by = 'id'){
+        return DB::table('users')
+            ->select('id', 'name', 'email', 'email_verified_at', 'avatar', 'created_at')
+            ->where('role', '!=', 1)
+            ->limit($limit)
+            ->offset($skip)
+            ->orderBy($sort_by, $sort)
+            ->get();
+    }
+    public static function apiGetRand($limit = 10, $skip = 0){
+        return DB::table('users')
+            ->select('id', 'name', 'email', 'email_verified_at', 'avatar', 'created_at')
+            ->where('role', '!=', 1)
+            ->limit($limit)
+            ->offset($skip)
+            ->inRandomOrder()
+            ->get();
+    }
+    public static function apiGetPag($count = 10, $sort = 'desc', $sort_by = 'id'){
+        return DB::table('users')
+            ->select('id', 'name', 'email', 'email_verified_at', 'avatar', 'created_at')
+            ->where('role', '!=', 1)
+            ->orderBy($sort_by, $sort)
+            ->paginate($count);
+    }
 }

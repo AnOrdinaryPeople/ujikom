@@ -24,6 +24,7 @@ import Loading from './components/Loading'
 import VueApexCharts from 'vue-apexcharts'
 import Modar from './components/admin/Modar'
 import Invuut from './components/admin/Invut'
+import DocsComponent from "./components/dev/docs/DocsComponent"
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
@@ -58,6 +59,7 @@ Vue.component('modal', Modal)
 Vue.component('chart', VueApexCharts)
 Vue.component('admin-modal', Modar)
 Vue.component('admin-invut', Invuut)
+Vue.component('docs-component', DocsComponent)
 
 new Vue({
     router,
