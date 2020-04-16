@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mb-4">
         <h1 class="text-center border-bottom p-2">Belajar API Disini</h1>
         <p>API disini tidak terlalu rumit. Data yang akan kamu terima berupa JSON.</p>
         <div v-for="(i, key) in text" :key="key" class="pt-4 border-bottom">

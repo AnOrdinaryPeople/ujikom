@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mb-4">
         <div class="card">
             <div class="card-body">
                 <div v-if="loaded">

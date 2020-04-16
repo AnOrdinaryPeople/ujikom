@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container mb-4">
         <h1 class="text-center border-bottom p-2">Getting Started</h1>
         <div class="border-bottom pt-4">
             <h2 id="step-first">1. Login Dulu</h2>
