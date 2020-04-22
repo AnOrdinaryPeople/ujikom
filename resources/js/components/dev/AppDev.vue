@@ -16,7 +16,7 @@
                     @click.prevent="icon()"
                 >
                     <fa :icon="clicked ? 'angle-up' : 'angle-down'" />
-                    {{ ' Dokumen' }}
+                    {{ ' Dokumentasi' }}
                 </a>
                 <div id="app-sidebar-doc" class="collapse ml-4">
                     <router-link class="nav-link" to="/developer/docs/user">User</router-link>
