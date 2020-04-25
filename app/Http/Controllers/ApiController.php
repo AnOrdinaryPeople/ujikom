@@ -138,7 +138,7 @@ class ApiController extends Controller
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
         else{
-            $arr = $this->validator([$req->limit, $req->skip, $req->sort, $req->sort_by], 'user');
+            $arr = $this->validator([$req->limit, $req->skip, $req->sort, $req->sort_by, $req->user_id], 'post');
 
             $this->createLog($arr, $req);
             
@@ -151,7 +151,7 @@ class ApiController extends Controller
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
         else{
-            $arr = $this->validator([$req->limit, $req->skip, $req->sort, $req->sort_by, $req->user_id], 'post');
+            $arr = $this->validator([$req->limit, $req->skip, $req->sort, $req->sort_by, $req->user_id], 'reply');
 
             if(!$this->isAssoc($arr)){
                 $data['comment'] = Reply::apiGet($id, $arr[0], $arr[1], $arr[2], $arr[3], $arr[4]);
@@ -169,7 +169,7 @@ class ApiController extends Controller
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
         else{
-            $arr = $this->validator([$req->limit, $req->skip], 'post.rand');
+            $arr = $this->validator([$req->limit, $req->skip], 'reply.rand');
 
             if(!$this->isAssoc($arr))
                 $data['comment'] = Reply::apiGetRand($id, $arr[0], $arr[1]);
@@ -184,7 +184,7 @@ class ApiController extends Controller
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
         else{
-            $arr = $this->validator([$req->limit, $req->skip, $req->sort, $req->sort_by], 'user');
+            $arr = $this->validator([$req->limit, $req->skip, $req->sort, $req->sort_by, $req->user_id], 'reply');
 
             $this->createLog($arr, $req);
             
@@ -197,42 +197,43 @@ class ApiController extends Controller
         $arr = [10, 0, 'desc', 'id', null];
         $err = [];
 
-        if($type === 'user' || $type === 'user.rand' || $type === 'post' || $type === 'post.rand'){
+        if($type === 'user' || $type === 'user.rand' || $type === 'post' || $type === 'post.rand' || $type === 'reply' || $type === 'reply.rand'){
             if($req[0]){
                 if(!is_numeric($req[0]))
                     $err['limit'] = 'Limit must be integer.';
                 else $arr[0] = $req[0];
             }
         }
-        if($type === 'user' || $type === 'user.rand' || $type === 'post' || $type === 'post.rand'){
+        if($type === 'user' || $type === 'user.rand' || $type === 'post' || $type === 'post.rand' || $type === 'reply' || $type === 'reply.rand'){
             if($req[1]){
                 if(!is_numeric($req[1]))
                     $err['skip'] = 'Skip must be integer.';
                 else $arr[1] = $req[1];
             }
         }
-        if($type === 'user' || $type === 'post'){
+        if($type === 'user' || $type === 'post' || $type === 'reply'){
             if($req[2]){
                 if(strtolower($req[2]) === 'desc' || strtolower($req[2]) === 'asc')
                     $arr[2] = $req[2];
                 else $err['sort'] = "Sort only 'asc' and 'desc'.";
             }
         }
-        if($type === 'user' || $type === 'post'){
+        if($type === 'user' || $type === 'post' || $type === 'reply'){
             if($req[3]){
                 if(strtolower($req[3]) === 'id'
                     || strtolower($req[3]) === 'name'
                     || strtolower($req[3]) === 'email'
                     || strtolower($req[3]) === 'created_at'
-                    || (strtolower($req[3]) === 'votes' && $type === 'post')
-                    || (strtolower($req[3]) === 'user_id' && $type === 'post'))
+                    || (strtolower($req[3]) === 'title' && $type === 'post')
+                    || (strtolower($req[3]) === 'votes' && ($type === 'post' || $type === 'reply'))
+                    || (strtolower($req[3]) === 'user_id' && ($type === 'post' || $type === 'reply')))
                     $arr[3] = $req[3];
                 else{
-                    $err['sort_by'] = "Sort By only 'id', 'name', 'email',".($type === 'post' ? " 'user_id', 'votes'," : "")." and 'created_at'.";
+                    // $err['sort_by'] = "Sort By only".($type === 'post' ? " ".($type === 'reply' ? " " : "'title', ")."'user_id', 'votes'," : " 'id', 'name', 'email',")." and 'created_at'.";
                 }
             }
         }
-        if($type === 'post'){
+        if($type === 'post' || $type === 'reply'){
             if($req[4]){
                 if(!is_numeric($req[4]))
                     $err['limit'] = 'User_id must be integer.';
