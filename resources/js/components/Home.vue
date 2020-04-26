@@ -153,9 +153,14 @@
                                             <small>{{ i.name }}</small>
                                         </div>
                                         <div class="col-3 text-right">
-                                            {{ i.created_at | dt }}
+                                            <span :title="i.created_at">{{ i.created_at | dt }}</span>
                                             <br />
-                                            <small>{{ i.type == 1 ? 'Postingan' : (i.type == 2 ? 'Artikel' : 'Rekomendasi Perusahaan') }}</small>
+                                            <small>
+                                                <fa
+                                                    :icon="i.type == 1 ? 'code' : (i.type == 2 ? 'file-alt' : 'building')"
+                                                />
+                                                {{ i.type == 1 ? ' Postingan' : (i.type == 2 ? ' Artikel' : ' Rekomendasi Perusahaan') }}
+                                            </small>
                                         </div>
                                     </div>
                                 </div>

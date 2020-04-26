@@ -1,81 +1,41 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-8 col-sm-12 pt-3">
-                <h4 id="post">Postingan</h4>
-                <hr />
-                <div v-if="src[0].length" class="card mb-4">
-                    <ul class="list-group list-group-flush">
-                        <li
-                            v-for="(i, key) in src[0]"
-                            :key="key"
-                            class="list-group-item custom-hover"
-                            @click="open(i.id)"
-                        >
-                            <h4>{{ i.title | titleCase }}</h4>
-                            <small class="text-muted">{{ i.name }} | {{ i.created_at | dt }}</small>
-                            <br />
-                            <small class="text-secondary">
-                                <fa icon="comment-dots" />
-                                {{ ' ' + i.total + ' | ' }}
-                                <fa icon="check" />
-                                {{ ' ' + i.votes }}
-                            </small>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="text-center text-secondary">
-                    <h4>Hasil {{ $route.query.q }} untuk postingan tidak ditemukan</h4>
-                </div>
-                <h4 id="article">Artikel</h4>
-                <hr />
-                <div v-if="src[1].length" class="card mb-4">
-                    <ul class="list-group list-group-flush">
-                        <li
-                            v-for="(i, key) in src[1]"
-                            :key="key"
-                            class="list-group-item custom-hover"
-                            @click="open(i.id)"
-                        >
-                            <h4>{{ i.title | titleCase }}</h4>
-                            <small class="text-muted">{{ i.name }} | {{ i.created_at | dt }}</small>
-                            <br />
-                            <small class="text-secondary">
-                                <fa icon="comment-dots" />
-                                {{ ' ' + i.total + ' | ' }}
-                                <fa icon="check" />
-                                {{ ' ' + i.votes }}
-                            </small>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="text-center text-secondary">
-                    <h4>Hasil {{ $route.query.q }} untuk artikel tidak ditemukan</h4>
-                </div>
-                <h4 id="recommendation">Rekomendasi Perusahaan</h4>
-                <hr />
-                <div v-if="src[2].length" class="card">
-                    <ul class="list-group list-group-flush">
-                        <li
-                            v-for="(i, key) in src[2]"
-                            :key="key"
-                            class="list-group-item custom-hover"
-                            @click="open(i.id)"
-                        >
-                            <h4>{{ i.title | titleCase }}</h4>
-                            <small class="text-muted">{{ i.name }} | {{ i.created_at | dt }}</small>
-                            <br />
-                            <small class="text-secondary">
-                                <fa icon="comment-dots" />
-                                {{ ' ' + i.total + ' | ' }}
-                                <fa icon="check" />
-                                {{ ' ' + i.votes }}
-                            </small>
-                        </li>
-                    </ul>
-                </div>
-                <div v-else class="text-center text-secondary">
-                    <h4>Hasil {{ $route.query.q }} untuk rekomendasi perusahaan tidak ditemukan</h4>
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <div
+                    v-for="(s, k) in src"
+                    :key="k"
+                    class="pt-4"
+                    :id="k === 0 ? 'post' : (k === 1 ? 'article' : 'recommendation')"
+                >
+                    <h4>
+                        <fa :icon="k === 0 ? 'code' : (k === 1 ? 'file-alt' : 'building')" />
+                        {{ k === 0 ? ' Postingan' : (k === 1 ? ' Artikel' : ' Rekomendasi Perusahaan') }}
+                    </h4>
+                    <hr />
+                    <div v-if="s.length" class="card pb-4">
+                        <ul class="list-group list-group-flush">
+                            <li
+                                v-for="(i, key) in s"
+                                :key="key"
+                                class="list-group-item custom-hover"
+                                @click="open(i.id)"
+                            >
+                                <h4>{{ i.title | titleCase }}</h4>
+                                <small class="text-muted">{{ i.name }} | {{ i.created_at | dt }}</small>
+                                <br />
+                                <small class="text-secondary">
+                                    <fa icon="comment-dots" />
+                                    {{ ' ' + i.total + ' | ' }}
+                                    <fa icon="check" />
+                                    {{ ' ' + i.votes }}
+                                </small>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-else class="text-center text-secondary pb-4">
+                        <h4>Hasil "{{ $route.query.q }}" tidak ditemukan</h4>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12">
