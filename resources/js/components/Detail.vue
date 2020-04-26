@@ -126,11 +126,11 @@
                         <h5 v-if="p.type == 3" class="text-muted">{{ p.location }}</h5>
                         <markdown class="mb-body" :content="p.desc" />
                     </div>
-                    <div class="card-footer border-0 custom-bg-none">
+                    <div class="card-footer custom-bg-none">
                         <div class="container">
                             <div class="row">
                                 <div class="col-6">
-                                    {{ p.created_at | dt }}
+                                    <span :title="p.created_at">{{ p.created_at | dt }}</span>
                                     <br />
                                     <small>{{ p.type == 1 ? 'Postingan' : (p.type == 2 ? 'Artikel' : 'Rekomendasi Perusahaan') }}</small>
                                 </div>
