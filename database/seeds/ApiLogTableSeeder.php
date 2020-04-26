@@ -18,8 +18,8 @@ class ApiLogTableSeeder extends Seeder
             '/api/user/rand',
             '/api/post',
             '/api/post/rand',
-            '/api/comment',
-            '/api/comment/rand'
+            '/api/comment/'.rand(1, 50),
+            '/api/comment/'.rand(1, 50).'/rand'
         ];
 
         for($i = 0; $i < 25; $i++){
@@ -27,7 +27,7 @@ class ApiLogTableSeeder extends Seeder
 
             $data[] = [
                 'api_id' => 1,
-                'description' => url($sauce[rand(0, count($sauce) - 1)]),
+                'description' => $sauce[rand(0, count($sauce) - 1)],
                 'status' => rand(0, 1),
                 'created_at' => $dt,
                 'updated_at' => $dt
