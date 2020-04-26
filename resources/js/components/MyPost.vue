@@ -131,16 +131,6 @@ export default {
             ttl: ""
         }
     }),
-    mounted() {
-        axios
-            .post(`/user/mine/${this.$auth.user().id}/${this.skip}`)
-            .then(resp => {
-                this.post = resp.data;
-                this.skip += 10;
-                this.loaded = true;
-            })
-            .catch(err => console.error(err.response));
-    },
     methods: {
         scrollLoad($state) {
             axios
@@ -157,6 +147,7 @@ export default {
                             $state.complete();
                         } catch (e) {}
                     }
+                    this.loaded = true;
                 });
         },
         danger(key) {

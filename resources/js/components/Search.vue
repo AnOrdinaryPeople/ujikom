@@ -80,7 +80,7 @@
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="sticky-top pt-3">
-                    <div class="card">
+                    <div class="card mb-3">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item custom-hover" @click="to('post')">
                                 <fa icon="hashtag" />
@@ -96,6 +96,23 @@
                             </li>
                         </ul>
                     </div>
+                    <div class="card">
+                        <div v-if="src[0].length || src[1].length || src[2].length" class="card">
+                            <div class="card-header text-center">Urutkan</div>
+                            <ul class="list-group list-group-flush">
+                                <li
+                                    v-for="(i, key) in sort"
+                                    :key="key"
+                                    class="list-group-item custom-hover"
+                                    :class="key === sortKey ? 'text-primary' : ''"
+                                    @click="orderBy(key)"
+                                >
+                                    <fa :icon="i.icon" size="lg" />
+                                    {{ ' ' + i.name }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,11 +122,16 @@
 <script>
 export default {
     data: () => ({
-        src: {
-            0: [],
-            1: [],
-            2: []
-        }
+        src: [[], [], []],
+        sortKey: 0,
+        sort: [
+            { name: "Terbaru", icon: "sort-amount-up" },
+            { name: "Terakhir", icon: "sort-amount-up-alt" },
+            { name: "Judul A-Z", icon: "sort-alpha-up" },
+            { name: "Judul Z-A", icon: "sort-alpha-down" },
+            { name: "Vote Terbesar", icon: "sort-numeric-up-alt" },
+            { name: "Vote Terkecil", icon: "sort-numeric-up" }
+        ]
     }),
     mounted() {
         this.search(this.$route.query.q);
@@ -128,8 +150,59 @@ export default {
                 })
                 .then(resp => {
                     this.src = resp.data;
+                    this.orderBy(0);
                 })
                 .catch(err => console.error(err.response));
+        },
+        orderBy(key) {
+            this.sortKey = key;
+            switch (key) {
+                case 0:
+                    this.src.forEach(s =>
+                        s.sort((a, b) =>
+                            a.id < b.id ? 1 : b.id < a.id ? -1 : 0
+                        )
+                    );
+                    break;
+                case 1:
+                    this.src.forEach(s =>
+                        s.sort((a, b) =>
+                            a.id > b.id ? 1 : b.id > a.id ? -1 : 0
+                        )
+                    );
+                    break;
+                case 2:
+                    this.src.forEach(s =>
+                        s.sort((a, b) =>
+                            a.title > b.title ? 1 : b.title > a.title ? -1 : 0
+                        )
+                    );
+                    break;
+                case 3:
+                    this.src.forEach(s =>
+                        s.sort((a, b) =>
+                            a.title < b.title ? 1 : b.title < a.title ? -1 : 0
+                        )
+                    );
+                    break;
+                case 4:
+                    this.src.forEach(s =>
+                        s.sort((a, b) =>
+                            a.votes < b.votes ? 1 : b.votes < a.votes ? -1 : 0
+                        )
+                    );
+                    break;
+                case 5:
+                    return this.src.forEach(s =>
+                        s.sort((a, b) =>
+                            a.votes > b.votes ? 1 : b.votes > a.votes ? -1 : 0
+                        )
+                    );
+                    break;
+
+                default:
+                    break;
+            }
         }
     },
     filters: {

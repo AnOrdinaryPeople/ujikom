@@ -563,7 +563,9 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function notifAllDel($user){
-        Notif::where('user_id', $user)->delete();
+        Notif::where('user_id', $user)
+            ->whereNotNull('sauce')
+            ->delete();
     }
 
     /**

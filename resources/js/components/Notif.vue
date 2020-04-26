@@ -46,7 +46,7 @@
             </div>
             <div slot="no-more" class="text-secondary">
                 <fa icon="skull-crossbones" size="5x" />
-                <h4 class="mt-4">Tidak ada notifikasi lagi..</h4>
+                <h4 class="mt-4">Semua notifikasi sudah ditampilkan..</h4>
                 <h6 title="yeet" @mouseover="secret = true" @mouseleave="secret = false">
                     <span v-if="secret">(ノOωO )ノ⌒┻━┻</span>
                     <span v-else>┳━┳ノ( OωOノ)</span>
@@ -120,8 +120,8 @@ export default {
         },
         allDel() {
             axios.post(`user/not/alll/${this.$auth.user().id}`).then(() => {
+                this.n = this.n.filter(f => f.sauce === null);
                 this.$emit("appNotCount");
-                this.n = [];
             });
         },
         removeURL(str) {
