@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <div class="card mt-4">
+        <div class="card my-4">
             <div class="card-body">
                 <div class="row">
                     <div class="col-6 mx-auto">
@@ -104,6 +104,116 @@
                         <div v-else class="text-center text-secondary">
                             <h1>Tidak ada riwayat</h1>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Request Berhasil</h4>
+                        <table class="table table-striped">
+                            <thead v-if="success.data.length">
+                                <tr>
+                                    <th>Request</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <thead v-else>
+                                <tr colspan="2">
+                                    <td class="text-center">
+                                        <strong>Tidak ada request</strong>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(i, key) in success.data" :key="key">
+                                    <td>
+                                        <span>{{ i.description | url }}</span>
+                                        <button
+                                            v-if="params(i.description).length"
+                                            class="btn btn-sm float-right"
+                                            data-toggle="collapse"
+                                            :data-target="'#success-'+key"
+                                        >
+                                            <fa icon="angle-down" />
+                                        </button>
+                                        <div
+                                            :id="'success-'+key"
+                                            v-if="params(i.description).length"
+                                            class="collapse"
+                                        >
+                                            <table class="table mt-3">
+                                                <tr
+                                                    v-for="(j, k) in params(i.description)"
+                                                    :key="k"
+                                                >
+                                                    <td class="py-0">{{ j.key }}</td>
+                                                    <td class="py-0">{{ j.val }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                    <td :title="i.created_at">{{ i.created_at | dt }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <paginate :data="success" @pagination-change-page="changeSuccess" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Request Gagal</h4>
+                        <table class="table table-striped">
+                            <thead v-if="failed.data.length">
+                                <tr>
+                                    <th>Request</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <thead v-else>
+                                <tr colspan="2">
+                                    <td class="text-center">
+                                        <strong>Tidak ada request</strong>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(i, key) in failed.data" :key="key">
+                                    <td>
+                                        <span>{{ i.description | url }}</span>
+                                        <button
+                                            v-if="params(i.description).length"
+                                            class="btn btn-sm float-right"
+                                            data-toggle="collapse"
+                                            :data-target="'#failed-'+key"
+                                        >
+                                            <fa icon="angle-down" />
+                                        </button>
+                                        <div
+                                            :id="'failed-'+key"
+                                            v-if="params(i.description).length"
+                                            class="collapse"
+                                        >
+                                            <table class="table mt-3">
+                                                <tr
+                                                    v-for="(j, k) in params(i.description)"
+                                                    :key="k"
+                                                >
+                                                    <td class="py-0">{{ j.key }}</td>
+                                                    <td class="py-0">{{ j.val }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                    <td :title="i.created_at">{{ i.created_at | dt }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <paginate :data="failed" @pagination-change-page="changeFailed" />
                     </div>
                 </div>
             </div>
@@ -142,7 +252,10 @@ export default {
             colors: ["#3490dc", "#e3342f"]
         },
         newSec: "",
-        error: false
+        success: { data: [] },
+        failed: { data: [] },
+        error: false,
+        sauce: process.env.MIX_APP_URL
     }),
     mounted() {
         axios
@@ -172,6 +285,13 @@ export default {
                 this.loaded = true;
             })
             .catch(err => console.error(err.response));
+        axios
+            .post(`dev/success/${this.$auth.user().id}`)
+            .then(resp => (this.success = resp.data));
+
+        axios
+            .post(`dev/failed/${this.$auth.user().id}`)
+            .then(resp => (this.failed = resp.data));
     },
     methods: {
         generate() {
@@ -229,6 +349,35 @@ export default {
                     this.newSec = "";
                 })
                 .catch(() => (this.newSec = ""));
+        },
+        changeSuccess(pg = 1) {
+            axios
+                .post(`dev/success/${this.$auth.user().id}?page=${pg}`)
+                .then(resp => (this.success = resp.data));
+        },
+        changeFailed(pg = 1) {
+            axios
+                .post(`dev/failed/${this.$auth.user().id}?page=${pg}`)
+                .then(resp => (this.failed = resp.data));
+        },
+        params(str) {
+            let data = [];
+
+            str.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, val) =>
+                data.push({ key: key, val: val })
+            );
+
+            return data;
+        }
+    },
+    filters: {
+        dt(str) {
+            return new Date(str).toLocaleString("id-ID", {
+                dateStyle: "medium"
+            });
+        },
+        url(str) {
+            return str.replace(/[?&]+([^=&]+)=([^&]*)/gi, "");
         }
     }
 };

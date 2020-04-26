@@ -74,6 +74,8 @@ Route::group(['prefix' => 'admin'], function(){
 
 Route::post('token/{user}', 'ApiController@index');
 Route::post('token/{user}/get', 'ApiController@generate');
+Route::post('dev/success/{user}', 'ApiController@getSuccess');
+Route::post('dev/failed/{user}', 'ApiController@getFailed');
 
 Route::get('user', 'ApiController@user');
 Route::get('user/rand', 'ApiController@userRand');

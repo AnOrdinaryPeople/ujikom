@@ -193,6 +193,18 @@ class ApiController extends Controller
                 : response()->json(Reply::apiGetPag($count, $id, $arr[2], $arr[3]));
         }
     }
+    public function getSuccess($id){
+        return ApiLog::where('api_id', Api::where('user_id', $id)->first()->id)
+            ->where('status', 0)
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+        }
+    public function getFailed($id){
+        return ApiLog::where('api_id', Api::where('user_id', $id)->first()->id)
+            ->where('status', 1)
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+    }
     private function validator($req, $type){
         $arr = [10, 0, 'desc', 'id', null];
         $err = [];
@@ -221,15 +233,19 @@ class ApiController extends Controller
         if($type === 'user' || $type === 'post' || $type === 'reply'){
             if($req[3]){
                 if(strtolower($req[3]) === 'id'
-                    || strtolower($req[3]) === 'name'
-                    || strtolower($req[3]) === 'email'
                     || strtolower($req[3]) === 'created_at'
+                    || strtolower($req[3]) === 'name' && $type === 'user'
+                    || strtolower($req[3]) === 'email' && $type === 'user'
                     || (strtolower($req[3]) === 'title' && $type === 'post')
                     || (strtolower($req[3]) === 'votes' && ($type === 'post' || $type === 'reply'))
                     || (strtolower($req[3]) === 'user_id' && ($type === 'post' || $type === 'reply')))
                     $arr[3] = $req[3];
                 else{
-                    // $err['sort_by'] = "Sort By only".($type === 'post' ? " ".($type === 'reply' ? " " : "'title', ")."'user_id', 'votes'," : " 'id', 'name', 'email',")." and 'created_at'.";
+                    $err['sort_by'] = "Sort By only 'id', ".
+                        ($type === 'post'
+                            ? "'title', 'user_id', 'votes',"
+                            : ($type === 'reply' ? "'user_id', 'votes'," : "'name', 'email',")
+                        )." and 'created_at'.";
                 }
             }
         }
@@ -246,7 +262,7 @@ class ApiController extends Controller
     private function createLog($arr, $req){
         ApiLog::create([
             'api_id' => Api::where('access_token', $req->header('Access'))->first()->id,
-            'description' => $req->fullUrl(),
+            'description' => str_replace(url('/'), '', $req->fullUrl()),
             'status' => $this->isAssoc($arr) ? 1 : 0
         ]);
     }
