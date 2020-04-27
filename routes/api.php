@@ -52,6 +52,7 @@ Route::group(['prefix' => 'user'], function(){
 	Route::post('update/reply/{id}', 'UserController@updateRep');
 	Route::post('destroy/{id}', 'UserController@destroy');
 	Route::post('destroy/reply/{id}', 'UserController@destroyRep');
+	Route::post('resend/{id}', 'AuthController@resendVer');
 });
 
 Route::group(['prefix' => 'admin'], function(){

@@ -232,4 +232,14 @@ class AuthController extends Controller
 
 		return response()->json($user);
 	}
+	public function resendVer($id){
+		$user = User::find($id);
+
+		Mail::to($user->email)->send(new \App\Mail\EmailContent([
+			'name' => $user->name,
+			'token' => base64_encode($user->token)
+		]));
+
+		return response()->json(['status' => 'done']);
+	}
 }

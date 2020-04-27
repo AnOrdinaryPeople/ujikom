@@ -21,6 +21,7 @@
                     </div>
                     <div class="col-md-8">
                         <div class="container my-4">
+                            <div v-if="info" class="alert alert-success">{{ info }}</div>
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <div class="form-group">
@@ -101,6 +102,13 @@
                                 {{ ' Update' }}
                             </button>
                             <fa v-if="clicked" icon="spinner" spin size="lg" class="text-primary" />
+                            <button
+                                v-if="!$auth.user().email_verified_at"
+                                class="btn btn-success"
+                                :disabled="clickedd"
+                                @click="resend()"
+                            >Kirim ulang verifikasi</button>
+                            <fa v-if="clickedd" icon="spinner" spin size="lg" class="text-success" />
                         </div>
                     </div>
                 </div>
@@ -121,7 +129,9 @@ export default {
             password_confirmation: ""
         },
         clicked: false,
-        err: [false, false]
+        err: [false, false],
+        clickedd: false,
+        info: false
     }),
     created() {
         this.sauce = this.$auth.user().avatar;
@@ -179,6 +189,14 @@ export default {
                     })
                     .catch(err => console.error(err.response));
             }
+        },
+        resend() {
+            this.clickedd = true;
+            axios.post(`user/resend/${this.$auth.user().id}`).then(() => {
+                this.info =
+                    "Kirim ulang berhasil! \nCek email kamu untuk melakukan verifikasi";
+                this.clickedd = false;
+            });
         }
     }
 };
