@@ -102,12 +102,19 @@ export default {
         notiff: false
     }),
     mounted() {
+        const q = this.$route.query.token;
+
         if (this.$session.has("notif")) {
             this.notif = true;
             this.$session.remove("notif");
         } else if (this.$session.has("notiff")) {
             this.notiff = true;
             this.$session.remove("notiff");
+        }
+
+        if (q) {
+            const data = JSON.parse(atob(q));
+            this.login(data.email, data.pass);
         }
     },
     methods: {
