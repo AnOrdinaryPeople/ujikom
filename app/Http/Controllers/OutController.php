@@ -34,9 +34,11 @@ class OutController extends Controller
      * @return \Illuminate\Routing\Redirector
      */
     public function handleProviderCallback($provider){
-    	$user = Socialite::driver($provider)->stateless()->user();
+        $user = Socialite::driver($provider)->stateless()->user();
+
         $email = empty($user->email) ? $user->id.'@efbih.rpl' : $user->email;
-        $pass = Hash::make($user->email.$user->id);
+        $p = md5($email.$user->id);
+        $pass = Hash::make($p);
 
     	if(!User::where('email', $email)->first()) User::create([
 	    	'email_verified_at' => Carbon::now(),
@@ -53,6 +55,6 @@ class OutController extends Controller
             'avatar' => $user->avatar
         ]);
 
-    	return redirect('/login?token='.base64_encode(json_encode(['email' => $email, 'pass' => $user->email.$user->id])));
+    	return redirect('/login?token='.base64_encode(json_encode(['email' => $email, 'pass' => $p])));
     }
 }

@@ -19,7 +19,7 @@ class AdminController extends Controller
      * of history deletes,
      * user, post, and report.
      *
-     * @return void
+     * @return \Illuminate\Http\Response
      */
     public function home(){
         return response()->json([

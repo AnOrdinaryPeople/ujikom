@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Hash;
 
 class ApiController extends Controller
 {
+    /**
+     * ------------------------------
+     * Dashboard
+     * ------------------------------
+     * 
+     * Send log request and token API
+     * to dashboard.
+     *
+     * @param int $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function index($id){
         $api = Api::where('user_id', $id)->first();
 
@@ -28,6 +40,14 @@ class ApiController extends Controller
             ]);
         }else return response()->json(['result' => 0]);
     }
+
+    /**
+     * Generate access and secret token.
+     *
+     * @param int $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function generate($id){
         $token = $this->token($id);
 
@@ -52,6 +72,14 @@ class ApiController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Make the token.
+     *
+     * @param int $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
     private function token($id){
         $user = User::find($id);
         $email = md5(Hash::make($user->email));
@@ -62,6 +90,45 @@ class ApiController extends Controller
         ];
     }
 
+    /**
+     * Paginate success log.
+     *
+     * @param int $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function getSuccess($id){
+        return ApiLog::where('api_id', Api::where('user_id', $id)->first()->id)
+            ->where('status', 0)
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+    }
+
+    /**
+     * Paginate failed log.
+     *
+     * @param int $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function getFailed($id){
+        return ApiLog::where('api_id', Api::where('user_id', $id)->first()->id)
+            ->where('status', 1)
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+    }
+
+    /**
+     * ------------------------------
+     * API
+     * ------------------------------
+     * 
+     * Send user data.
+     *
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function user(Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -75,6 +142,14 @@ class ApiController extends Controller
                 : response()->json(User::apiGet($arr[0], $arr[1], $arr[2], $arr[3]));
         }
     }
+
+    /**
+     * Send random user data.
+     *
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function userRand(Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -88,6 +163,15 @@ class ApiController extends Controller
                 : response()->json(User::apiGetRand($arr[0], $arr[1]));
         }
     }
+
+    /**
+     * Send pagination user data.
+     *
+     * @param int $count
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function userPag($count = 10, Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -101,6 +185,14 @@ class ApiController extends Controller
                 : response()->json(User::apiGetPag($count, $arr[2], $arr[3]));
         }
     }
+
+    /**
+     * Send post data.
+     *
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function post(Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -119,6 +211,14 @@ class ApiController extends Controller
                 : response()->json($data);
         }
     }
+
+    /**
+     * Send random post data.
+     *
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function postRand(Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -134,6 +234,15 @@ class ApiController extends Controller
                 : response()->json($data);
         }
     }
+
+    /**
+     * Send pagination post data.
+     *
+     * @param int $count
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function postPag($count = 10, Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -147,6 +256,15 @@ class ApiController extends Controller
                 : response()->json(Post::apiGetPag($count, $arr[2], $arr[3]));
         }
     }
+
+    /**
+     * Send comment data.
+     *
+     * @param int $id
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function comment($id, Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -165,6 +283,15 @@ class ApiController extends Controller
                 : response()->json($data);
         }
     }
+
+    /**
+     * Send random comment data.
+     *
+     * @param int $id
+     * @param Request $req
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function commentRand($id, Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -180,6 +307,16 @@ class ApiController extends Controller
                 : response()->json($data);
         }
     }
+
+    /**
+     * Send pagination comment data.
+     *
+     * @param mixed $id
+     * @param integer $count
+     * @param Request $req
+     * 
+     * @return void
+     */
     public function commentPag($id, $count = 10, Request $req){
         if($data = $this->header($req))
             return response()->json($data[0], $data[1]);
@@ -193,18 +330,15 @@ class ApiController extends Controller
                 : response()->json(Reply::apiGetPag($count, $id, $arr[2], $arr[3]));
         }
     }
-    public function getSuccess($id){
-        return ApiLog::where('api_id', Api::where('user_id', $id)->first()->id)
-            ->where('status', 0)
-            ->orderBy('id', 'desc')
-            ->paginate(5);
-        }
-    public function getFailed($id){
-        return ApiLog::where('api_id', Api::where('user_id', $id)->first()->id)
-            ->where('status', 1)
-            ->orderBy('id', 'desc')
-            ->paginate(5);
-    }
+
+    /**
+     * Validation API.
+     *
+     * @param array $req
+     * @param string $type
+     * 
+     * @return void
+     */
     private function validator($req, $type){
         $arr = [10, 0, 'desc', 'id', null];
         $err = [];
@@ -259,6 +393,13 @@ class ApiController extends Controller
 
         return count($err) ? $err : $arr;
     }
+
+    /**
+     * Create log after request API.
+     *
+     * @param mixed $arr
+     * @param Request $req
+     */
     private function createLog($arr, $req){
         ApiLog::create([
             'api_id' => Api::where('access_token', $req->header('Access'))->first()->id,
@@ -266,11 +407,27 @@ class ApiController extends Controller
             'status' => $this->isAssoc($arr) ? 1 : 0
         ]);
     }
+
+    /**
+     * Validation if associative array.
+     *
+     * @param Array $arr
+     * 
+     * @return bool
+     */
     private function isAssoc(Array $arr){
         return array() === $arr
             ? false
             : array_keys($arr) !== range(0, count($arr) - 1);
     }
+
+    /**
+     * Validation if request has header.
+     *
+     * @param Request $req
+     * 
+     * @return void
+     */
     private function header($req){
         if($req->bearerToken()){
             if(!empty(Api::where('secret_token', base64_encode($req->bearerToken()))->first()->id)) $data = false;
